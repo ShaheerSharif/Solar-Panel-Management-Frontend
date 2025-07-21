@@ -79,8 +79,7 @@ export default function DashboardScreen() {
   );
 
   const breakdownOverall = useMemo(
-    (): Record<
-      TimePeriod,
+    (): Record<TimePeriod,
       {
         produced: BreakdownType[];
         consumed: BreakdownType[];

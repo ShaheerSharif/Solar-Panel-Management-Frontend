@@ -58,9 +58,11 @@ export default function StatusScreen() {
     red: "rgb(185, 28, 28)",
   };
 
+  console.log("Status Screen Rendered"); // The screen is rendering
+
   return (
-    <SafeAreaView edges={["left", "right"]}>
-      <ScrollView style={{ flex: 1 }}>
+    <SafeAreaView edges={["left", "right"]} style={{ flex: 1 }}>
+      <ScrollView>
         {/* Main Container */}
         <VStack className="bg-white px-4 py-4" space="md">
           {/* Status Container */}

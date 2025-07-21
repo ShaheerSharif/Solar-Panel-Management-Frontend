@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "@/utils/authContext";
 
 import {
@@ -21,59 +21,61 @@ import { Center } from "@/components/ui/center";
 import { Link, LinkText } from "@/components/ui/link";
 import { Heading } from "@/components/ui/heading";
 
-export default function LoginScreen() {
+export default function SignupScreen() {
+  const PASS_LENGTH = 6;
+
   const router = useRouter();
   const authContext = useContext(AuthContext);
-  const [verifyStatus, setVerifyStatus] = useState<boolean>();
+  const [signupStatus, setSignupStatus] = useState<boolean>();
 
   const [email, setEmail] = useState("");
   const [isEmailInvalid, setIsEmailInvalid] = useState<boolean | undefined>();
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState<
-    boolean | undefined
-  >();
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean | undefined>();
 
-  const checkEmailValid = () => {
+  const checkEmail = () => {
     setIsEmailInvalid(email === undefined || email === "");
   };
 
-  const checkPasswordValid = () => {
-    setIsPasswordInvalid(password === undefined || password.length < 6);
+  const checkPassword = () => {
+    setIsPasswordInvalid(password === undefined || password.length < PASS_LENGTH);
   };
 
-  const handlelogin = () => {
-    checkEmailValid();
-    checkPasswordValid();
+  const handleSignup = () => {
+    checkEmail();
+    checkPassword();
 
     if (!isEmailInvalid && !isPasswordInvalid) {
 
-      setVerifyStatus(authContext.login(email, password));
+      setSignupStatus(authContext.signup(email, password));
 
-      if (verifyStatus) router.replace("/(tabs)/DashboardScreen");
+      if (signupStatus) router.replace("/(auth)/login");
     }
   };
 
   const emailErrMsg = (): string => {
     if (!email) return "Email is required";
-    if (!verifyStatus) return "Incorrect email or password";
+    if (!signupStatus) return "Incorrect email or password";
     return "";
   };
 
   const passwordErrMsg = (): string => {
     if (!password) return "Password is required";
-    if (!verifyStatus) return "Incorrect email or password";
+    if (password.length < PASS_LENGTH) return `Password must have atleast ${PASS_LENGTH} characters`;
+    if (!signupStatus) return "Incorrect email or password";
     return "";
   };
 
   return (
     <SafeAreaView edges={["top", "bottom"]}>
-      <Center className="h-full">
+      <Center className="h-full rounded">
         <VStack className="w-full max-w-[300px] p-4">
           <Heading className="mb-5 self-center" size={"2xl"}>
-            Login
+            SignUp
           </Heading>
+
           {/* Email */}
           <FormControl size="lg" isRequired={true} isInvalid={isEmailInvalid}>
             <FormControlLabel>
@@ -123,26 +125,22 @@ export default function LoginScreen() {
             </FormControlError>
           </FormControl>
 
-          <Link
-            onPress={() => router.push("/(auth)/ForgotPasswordScreen")}
-            className="mt-4 self-end"
-          >
-            <LinkText>Forgot Password?</LinkText>
-          </Link>
-
           <Button
             className="w-60 mt-10 rounded-full self-center"
             size="lg"
-            onPress={handlelogin}
+            onPress={handleSignup}
           >
-            <ButtonText>Login</ButtonText>
+            <ButtonText>Create Account</ButtonText>
           </Button>
 
           <Link
-            onPress={() => router.replace("/(auth)/SignupScreen")}
+            onPress={(e) => {
+              e?.preventDefault();
+              router.replace("/(auth)/login")
+            }}
             className="mt-4 self-center"
           >
-            <LinkText>Don't have an account?</LinkText>
+            <LinkText>Already have an account?</LinkText>
           </Link>
         </VStack>
       </Center>

@@ -38,7 +38,7 @@ export default function ForgotPasswordScreen() {
 
       setVerifyStatus(authContext.passwordReset(email));
 
-      if (verifyStatus) router.replace("/(auth)/LoginScreen");
+      if (verifyStatus) router.replace("/(auth)/login");
     }
   };
 
@@ -50,7 +50,7 @@ export default function ForgotPasswordScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]}>
-      <Center className="h-full">
+      <Center className="h-full rounded">
         <VStack className="w-full max-w-[300px] p-4">
           <Heading className="mb-5 self-center" size={"2xl"}>
             Forgot Password
@@ -83,7 +83,10 @@ export default function ForgotPasswordScreen() {
           </Button>
 
           <Link
-            onPress={() => router.replace("/(auth)/LoginScreen")}
+            onPress={(e) => {
+              e?.preventDefault();
+              router.replace("/(auth)/login")
+            }}
             className="mt-4 self-center"
           >
             <LinkText>Back to login</LinkText>

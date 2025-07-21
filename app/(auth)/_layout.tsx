@@ -6,7 +6,7 @@ export default function AuthLayout() {
   const authContext = useContext(AuthContext);
 
   if (authContext.isLoggedIn) {
-    return <Redirect href={"/(tabs)/DashboardScreen"} />;
+    return <Redirect href={"/(tabs)/dashboard"} />;
   }
 
   return (
@@ -16,9 +16,9 @@ export default function AuthLayout() {
         gestureEnabled: false,
       }}
     >
-      <Stack.Screen name="LoginScreen" />
-      <Stack.Screen name="SignupScreen" />
-      <Stack.Screen name="ForgotPasswordScreen" />
+      <Stack.Screen name="login" />
+      <Stack.Screen name="signup" />
+      <Stack.Screen name="forgot-password" />
     </Stack>
   );
 }

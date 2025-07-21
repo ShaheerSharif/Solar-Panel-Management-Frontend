@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Redirect, Tabs } from "expo-router";
 import { SunIcon } from "lucide-react-native";
 
@@ -18,7 +18,7 @@ export default function TabLayout() {
   const authState = useContext(AuthContext);
 
   if (!authState.isLoggedIn) {
-    return <Redirect href="/(auth)/LoginScreen" />;
+    return <Redirect href="/(auth)/login" />;
   }
 
   return (
@@ -48,7 +48,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="DashboardScreen"
+        name="dashboard"
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color, focused }) =>
@@ -56,7 +56,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="StatusScreen"
+        name="status"
         options={{
           title: "Status",
           tabBarIcon: ({ color, focused }) =>
@@ -64,7 +64,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="NotificationScreen"
+        name="notification"
         options={{
           title: "Notification",
           tabBarIcon: ({ color, focused }) =>

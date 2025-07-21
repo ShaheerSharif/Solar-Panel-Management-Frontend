@@ -1,4 +1,4 @@
-# Solar-Panel-Power-Management-System-Frontend
+# Solar Panel Power Management System Frontend
 
 ## Package Installation
 
@@ -24,6 +24,7 @@ npx expo install --fix
 npx expo start
 ```
 
+- Scan QR Code on mobile device or enter URL
 - Incase of bundler issues run
 
 ```bash

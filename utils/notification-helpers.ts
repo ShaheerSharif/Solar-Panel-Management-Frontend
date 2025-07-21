@@ -1,6 +1,5 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { CryptoDigestAlgorithm, digestStringAsync } from 'expo-crypto'
 
 dayjs.extend(relativeTime);
 
@@ -31,31 +30,25 @@ function generateRandomTimeStamps(count: number, maxDaysAgo: number) {
   return timestamps.sort((a, b) => Date.parse(b) - Date.parse(a));
 }
 
-async function generateNotificationData(
+function generateNotificationData(
   count: number,
   maxDaysAgo: number
-): Promise<NotificationType[]> {
+): NotificationType[] {
   const timestamps = generateRandomTimeStamps(count, maxDaysAgo);
 
-  const notificationsArray: NotificationType[] = await Promise.all(
-    timestamps.map(async (timestamp) => {
+  const notificationsArray: NotificationType[] = timestamps.map((timestamp, index) => {
+    const randomIndex = Math.floor(Math.random() * notificationTemplates.length);
+    const notification = notificationTemplates[randomIndex];
+    const { title, message } = notification;
+    const id = index.toString();
 
-      const randomIndex = Math.floor(Math.random() * notificationTemplates.length);
-      const notification = notificationTemplates[randomIndex];
-      const { title, message } = notification;
-      const id = await digestStringAsync(
-        CryptoDigestAlgorithm.SHA256,
-        `${title}-${timestamp}-${message}`
-      )
-
-      return {
-        id: id,
-        title: title,
-        message: message,
-        timestamp: timestamp,
-      };
-    })
-  )
+    return {
+      id: id,
+      title: title,
+      message: message,
+      timestamp: timestamp,
+    };
+  })
 
   return notificationsArray;
 }

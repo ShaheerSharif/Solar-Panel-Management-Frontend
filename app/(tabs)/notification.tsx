@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -13,20 +13,9 @@ import { NotificationType, generateNotificationData } from "@/utils/notification
 
 export default function NotificationScreen() {
   const [showModal, setShowModal] = useState(false);
-  const [modalData, setModalData] = useState<NotificationType | undefined | null>(null);
-  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const [modalData, setModalData] = useState<NotificationType | null>(null);
+  const [notifications, setNotifications] = useState<NotificationType[]>(generateNotificationData(20, 10));
   const flatListRef = useRef<FlatList>(null);
-
-
-  // Run once on component mount and resolve promise
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await generateNotificationData(20, 10);
-      setNotifications(data);
-    }
-
-    loadData();
-  }, []);
 
   // Delete on notification swipe
   const onNotificationSwipe = (id: NotificationType["id"]) => {
@@ -35,7 +24,7 @@ export default function NotificationScreen() {
 
   // Show modal and set modal data on notification open/press
   const onNotificationOpen = (id: NotificationType["id"]) => {
-    const data = notifications.find(item => item.id === id);
+    const data = notifications.find(item => item.id === id) ?? null;
     setModalData(data);
     setShowModal(true);
   };
@@ -68,7 +57,7 @@ export default function NotificationScreen() {
         ref={flatListRef}
         renderItem={({ item }) => (
           <NotificationButton
-            notification={item.data}
+            notification={item}
             onPress={onNotificationOpen}
             onDelete={onNotificationSwipe}
           />
