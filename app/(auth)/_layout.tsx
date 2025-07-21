@@ -1,7 +1,14 @@
-// app/(auth)/_layout.tsx
-import { Stack } from "expo-router";
+import { useContext } from "react";
+import { Redirect, Stack } from "expo-router";
+import { AuthContext } from "@/utils/authContext";
 
 export default function AuthLayout() {
+  const authContext = useContext(AuthContext);
+
+  if (authContext.isLoggedIn) {
+    return <Redirect href={"/(tabs)/DashboardScreen"} />;
+  }
+
   return (
     <Stack
       screenOptions={{
@@ -9,9 +16,9 @@ export default function AuthLayout() {
         gestureEnabled: false,
       }}
     >
-      <Stack.Screen name="login" />
-      <Stack.Screen name="signup" />
-      <Stack.Screen name="forgot-password" />
+      <Stack.Screen name="LoginScreen" />
+      <Stack.Screen name="SignupScreen" />
+      <Stack.Screen name="ForgotPasswordScreen" />
     </Stack>
   );
 }

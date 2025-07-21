@@ -2,18 +2,15 @@ import { View, Text, StyleSheet } from "react-native";
 import { DynamicColorText } from "./DynamicColorText";
 import { SystemStatus } from "@/utils/status-functions";
 import { Ionicons } from "@expo/vector-icons";
+import { BatteryStatus } from "@/utils/status-functions";
 
 export type BatteryIconProps = {
   batteryPercentage: SystemStatus["batteryPercentage"];
   batteryIsCharging: boolean;
 };
 
-export type BatteryStatusProps = {
-  batteryStatus: "charging" | "full" | "normal" | "low" | "critical" | "dead";
-};
-
 const batteryIconMap: Record<
-  BatteryStatusProps["batteryStatus"],
+  BatteryStatus["status"],
   [keyof typeof Ionicons.glyphMap, string]
 > = {
   charging: ["battery-charging", "rgb(0, 122, 255)"],
@@ -28,7 +25,7 @@ export function BatteryIcon({
   batteryPercentage,
   batteryIsCharging = false,
 }: BatteryIconProps) {
-  let batteryStatus: BatteryStatusProps["batteryStatus"];
+  let batteryStatus: BatteryStatus["status"];
 
   if (batteryIsCharging) {
     batteryStatus = "charging";

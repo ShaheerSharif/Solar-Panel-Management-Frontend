@@ -1,42 +1,77 @@
 import { useRouter } from "expo-router";
-import { createContext, PropsWithChildren, useState } from "react";
+import { createContext, PropsWithChildren, useEffect, useState } from "react";
+
+const DUMMY_EMAIL = "abcd@gmail.com";
+const DUMMY_PASSWORD = "111111";
 
 type AuthState = {
   isLoggedIn: boolean;
-  logIn: (email: string, password: string) => void;
-  logOut: () => void;
+  login: (email: string, password: string) => boolean;
+  signup: (email: string, password: string) => boolean;
+  passwordReset: (email: string) => boolean;
+  logout: () => void;
 };
 
-export const AuthContext = createContext<AuthState>({
+const AuthContext = createContext<AuthState>({
   isLoggedIn: false,
-  logIn: () => {},
-  logOut: () => {},
+  login: () => false,
+  signup: () => false,
+  passwordReset: () => false,
+  logout: () => { },
 });
 
-export function AuthProvider({ children }: PropsWithChildren) {
+function AuthProvider({ children }: PropsWithChildren) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const router = useRouter();
 
-  // TODO: Define login logic
-  const logIn = (email: string, password: string) => {
-    if (email && password) {
-      // Authenticate user
+  // TODO Define login logic
+  const login = (
+    email: string,
+    password: string
+  ) => {
+    // TODO Dummy login logic (replace with real API later)
+    if (email === DUMMY_EMAIL && password === DUMMY_PASSWORD) {
       setIsLoggedIn(true);
-      router.replace("/(tabs)");
-    } else {
-      console.warn("Email and password required");
+      return true;
     }
+
+    return false;
   };
 
-  // TODO: Define logout logic
-  const logOut = () => {
+  // TODO Define signup logic
+  const signup = (
+    email: string,
+    password: string
+  ) => {
+    if (!(email && password)) return false;
+
+    // TODO Dummy signup logic (replace with real API later)
+    return true;
+  };
+
+  // TODO Define password reset logic
+  const passwordReset = (
+    email: string
+  ) => {
+    if (email) {
+      // TODO Simulate password reset
+      return true;
+    }
+
+    return false;
+  };
+
+  // TODO Define logout logic
+  const logout = () => {
     setIsLoggedIn(false);
-    router.replace("/(auth)/login");
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, logIn, logOut }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn, login, logout, signup, passwordReset }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
+
+export { AuthContext, AuthProvider }

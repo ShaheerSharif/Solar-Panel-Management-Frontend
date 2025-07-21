@@ -1,15 +1,21 @@
+import { useContext } from "react";
 import { Stack, useRouter } from "expo-router";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
 
+import { AuthContext } from "@/utils/authContext";
+
 export default function NotFoundScreen() {
+  const authContext = useContext(AuthContext);
   const router = useRouter();
 
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => router.replace("/(tabs)")}>
+        <TouchableOpacity onPress={() => router.replace(
+          authContext.isLoggedIn ? "/(tabs)/DashboardScreen" : "/(auth)/LoginScreen"
+        )}>
           <Text style={styles.linkText}>Go to home screen!</Text>
         </TouchableOpacity>
       </View>

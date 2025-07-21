@@ -1,17 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import "@/global.css";
+import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "react-native-reanimated";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { useEffect } from "react";
-import { useColorScheme } from "@/components/useColorScheme";
 import { AuthProvider } from "@/utils/authContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useColorScheme } from "@/components/useColorScheme";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -20,7 +22,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `(modal)` keeps a back button present.
-  initialRouteName: "(tabs)/dashboard.tsx",
+  initialRouteName: "(auth)/LoginScreen",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -47,28 +49,34 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <GluestackUIProvider mode="light">
+      <RootLayoutNav />
+    </GluestackUIProvider>
+  );
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  // const colorScheme = useColorScheme();
 
   return (
-    <SafeAreaProvider>
-      <AuthProvider>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
+    <GluestackUIProvider mode="light">
+      <SafeAreaProvider>
+        <AuthProvider>
+          {/* <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          > */}
           <Stack>
             <Stack.Screen
               name="(auth)"
               options={{ headerShown: false, gestureEnabled: false }}
             />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(modal)" options={{ presentation: "modal" }} />
+            <Stack.Screen name="(modals)" options={{ presentation: "modal" }} />
           </Stack>
-        </ThemeProvider>
-      </AuthProvider>
-    </SafeAreaProvider>
+          {/* </ThemeProvider> */}
+        </AuthProvider>
+      </SafeAreaProvider>
+    </GluestackUIProvider>
   );
 }

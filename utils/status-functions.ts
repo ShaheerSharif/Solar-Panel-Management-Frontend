@@ -10,6 +10,10 @@ export type SystemStatus = {
   batteryIsCharging: boolean;
 };
 
+export type BatteryStatus = {
+  status: "charging" | "full" | "normal" | "low" | "critical" | "dead";
+};
+
 export function getSystemStatus() {
   const systemStatus: SystemStatus = {
     gridPower: 121,
@@ -19,6 +23,25 @@ export function getSystemStatus() {
   };
 
   return systemStatus;
+}
+
+export function getBatteryStatus(
+  batteryPercentage: SystemStatus["batteryPercentage"],
+  batteryIsCharging: SystemStatus["batteryIsCharging"]
+): BatteryStatus {
+  if (batteryIsCharging) {
+    return { status: "charging" };
+  } else if (batteryPercentage >= 90) {
+    return { status: "full" };
+  } else if (batteryPercentage >= 50) {
+    return { status: "normal" };
+  } else if (batteryPercentage >= 30) {
+    return { status: "low" };
+  } else if (batteryPercentage >= 0) {
+    return { status: "critical" };
+  }
+
+  return { status: "dead" };
 }
 
 export function getWeather() {
