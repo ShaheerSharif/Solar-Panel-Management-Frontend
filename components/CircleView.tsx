@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, StyleProp, ViewStyle } from "react-native";
-import { MyIcons, MyIconProps } from "./MyIcons";
+import { MyIcon, MyIconProps } from "./MyIcon";
 
 export type CircleViewProps = {
   diameter: number;
@@ -44,7 +44,7 @@ export function CircleView({
             alignSelf: "center",
           }}
         >
-          <MyIcons name={iconName} color={componentColor} size={radius} />
+          <MyIcon name={iconName} color={componentColor} size={radius} />
         </View>
       </View>
       <View>

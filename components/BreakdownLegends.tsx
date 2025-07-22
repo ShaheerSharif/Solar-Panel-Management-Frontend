@@ -11,7 +11,7 @@ import { BreakdownType, UsageType } from "@/types/custom-types";
 
 export type BreakdownLegendsProps = {
   overallBreakDown: BreakdownType[];
-  breakDownMetric: BreakdownType["text"] | undefined;
+  breakDownMetric: BreakdownType["text"] | null;
   usageType: UsageType;
   className: ViewProps["className"];
 };

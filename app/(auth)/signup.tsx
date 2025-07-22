@@ -14,8 +14,8 @@ import {
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { VStack } from "@/components/ui/vstack";
-import { AlertCircleIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon";
-import { Button, ButtonText } from "@/components/ui/button";
+import { AlertCircleIcon, EyeIcon, EyeOffIcon, ArrowLeftIcon } from "lucide-react-native";
+import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
 import { Center } from "@/components/ui/center";
 import { Link, LinkText } from "@/components/ui/link";
@@ -70,80 +70,77 @@ export default function SignupScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]}>
-      <Center className="h-full rounded">
-        <VStack className="w-full max-w-[300px] p-4">
-          <Heading className="mb-5 self-center" size={"2xl"}>
-            SignUp
-          </Heading>
+      <VStack className="w-full h-full justify-center items-start px-8 gap-4">
+        <Heading className="w-full text-center" size="2xl">
+          SignUp
+        </Heading>
 
-          {/* Email */}
-          <FormControl size="lg" isRequired={true} isInvalid={isEmailInvalid}>
-            <FormControlLabel>
-              <FormControlLabelText>Email</FormControlLabelText>
-            </FormControlLabel>
-            <Input className="my-1" variant="rounded" size="lg">
-              <InputField
-                type="text"
-                placeholder="Enter email"
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-              />
-            </Input>
-            <FormControlError>
-              <FormControlErrorIcon as={AlertCircleIcon} />
-              <FormControlErrorText>{emailErrMsg()}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
+        {/* Email */}
+        <FormControl size="lg" isRequired={true} isInvalid={isEmailInvalid}>
+          <FormControlLabel>
+            <FormControlLabelText>Email</FormControlLabelText>
+          </FormControlLabel>
+          <Input className="w-full rounded-lg" variant="outline" size="lg">
+            <InputField
+              type="text"
+              placeholder="Enter email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+          </Input>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon} />
+            <FormControlErrorText>{emailErrMsg()}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
 
-          {/* Password */}
-          <FormControl isRequired={true} isInvalid={isPasswordInvalid}>
-            <FormControlLabel className="mt-4">
-              <FormControlLabelText>Password</FormControlLabelText>
-            </FormControlLabel>
-            <Input className="my-1" variant="rounded" size="lg">
-              <InputField
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-              />
-              <InputSlot
-                className="pr-3"
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
-              </InputSlot>
-            </Input>
-            <FormControlHelper>
-              <FormControlHelperText>
-                Must be atleast 6 characters
-              </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-              <FormControlErrorIcon as={AlertCircleIcon} />
-              <FormControlErrorText>{passwordErrMsg()}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
+        {/* Password */}
+        <FormControl isRequired={true} isInvalid={isPasswordInvalid}>
+          <FormControlLabel className="">
+            <FormControlLabelText>Password</FormControlLabelText>
+          </FormControlLabel>
+          <Input className="w-full justify-between rounded-lg" variant="outline" size="lg">
+            <InputField
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+            />
+            <InputSlot
+              className="pr-3"
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+            </InputSlot>
+          </Input>
+          <FormControlHelper>
+            <FormControlHelperText>
+              Must be atleast 6 characters
+            </FormControlHelperText>
+          </FormControlHelper>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon} />
+            <FormControlErrorText>{passwordErrMsg()}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
 
-          <Button
-            className="w-60 mt-10 rounded-full self-center"
-            size="lg"
-            onPress={handleSignup}
-          >
-            <ButtonText>Create Account</ButtonText>
-          </Button>
+        <Button
+          className="w-full rounded-lg self-center"
+          size="lg"
+          onPress={handleSignup}
+        >
+          <ButtonText>Create Account</ButtonText>
+        </Button>
 
-          <Link
-            onPress={(e) => {
-              e?.preventDefault();
-              router.replace("/(auth)/login")
-            }}
-            className="mt-4 self-center"
-          >
-            <LinkText>Already have an account?</LinkText>
-          </Link>
-        </VStack>
-      </Center>
+        <Button
+          variant="link"
+          onPress={() => router.back()}
+          className="gap-1"
+        >
+          <ButtonIcon as={ArrowLeftIcon} />
+          <ButtonText>Already have an account?</ButtonText>
+        </Button>
+      </VStack>
     </SafeAreaView>
   );
 }

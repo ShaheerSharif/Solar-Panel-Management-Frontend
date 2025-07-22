@@ -2,14 +2,29 @@ import React, { useMemo, useState } from "react";
 import { ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { LineChart, BarChart, PieChart } from "react-native-gifted-charts";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { MoveRightIcon, ActivityIcon, TimerIcon, UserIcon } from "lucide-react-native";
 
 import { Text } from "@/components/ui/text";
 import { Box } from "@/components/ui/box";
 import { Center } from "@/components/ui/center";
-import { Button } from "@/components/ui/button";
+import { Button, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { Divider } from "@/components/ui/divider";
 import { StatusMetricGroup } from "@/components/status-icons/StatusMetricGroup";
+import { BreakdownLegends } from "@/components/BreakdownLegends";
+import { VStack } from "@/components/ui/vstack";
+import { Heading } from "@/components/ui/heading";
+import {
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetIcon,
+  ActionsheetItem,
+  ActionsheetItemText,
+  ActionsheetSectionHeaderText
+} from "@/components/ui/actionsheet";
 
 import {
   generatePowerUsageData,
@@ -28,27 +43,45 @@ import {
   metricPercentage,
   totalPower,
 } from "@/utils/breakdown-functions";
-import { ChartColors, TimePeriod } from "@/constants/GraphConstants";
+import { ChartColors, TimePeriodEnum } from "@/constants/GraphConstants";
 import { capitalize } from "@/utils/str-functions";
-import { BreakdownLegends } from "@/components/BreakdownLegends";
+import { CleaningContainer, CleanType } from "@/components/cleaning/CleaningContainer";
+import { CleaningProgress } from "@/components/cleaning/CleaningProgress";
 
 export default function DashboardScreen() {
-  const [timePeriodState, setTimePeriodState] = useState<TimePeriod>(
-    TimePeriod.hourly
-  );
+  const [timePeriod, setTimePeriod] = useState<TimePeriodEnum>(TimePeriodEnum.hourly);
 
   const [showProduced, setShowProduced] = useState(true);
   const [showConsumed, setShowConsumed] = useState(true);
 
-  const [breakDownMetric, setBreakDownMetric] = useState<
-    BreakdownType["text"] | undefined
-  >();
+  const [breakDownMetric, setBreakDownMetric] = useState<BreakdownType["text"] | null>(null);
+
+  const [showOuterActionSheet, setShowOuterActionSheet] = useState(false);
+
+  const [cleanMethod, setCleanMethod] = useState<CleanType>("timer");
+  const [sensorCleanThreshold, setSensorCleanThreshold] = useState(40);
+
+  const changeTimePeriod = (key: TimePeriodEnum) => {
+    setTimePeriod(key);
+    setBreakDownMetric(null);
+  }
+
+  const openActionSheet = () => setShowOuterActionSheet(true)
+
+  const closeActionSheet = () => setShowOuterActionSheet(false)
+
+  const selectSolarCleanMethod = (method: CleanType) => {
+    if (method !== cleanMethod) {
+      setCleanMethod(method);
+    }
+    closeActionSheet();
+  }
 
   const [min, max] = [1, 9.5];
 
   const powerUsage = useMemo(
     (): Record<
-      TimePeriod,
+      TimePeriodEnum,
       {
         produced: { label: string; value: number }[];
         consumed: { label: string; value: number }[];
@@ -79,7 +112,7 @@ export default function DashboardScreen() {
   );
 
   const breakdownOverall = useMemo(
-    (): Record<TimePeriod,
+    (): Record<TimePeriodEnum,
       {
         produced: BreakdownType[];
         consumed: BreakdownType[];
@@ -115,18 +148,16 @@ export default function DashboardScreen() {
         className="w-full py-3 border-b-hairline border-slate-400"
       >
         <HStack className="overflow-x-auto justify-between">
-          {Object.values(TimePeriod).map((key: keyof typeof powerUsage) => (
+          {Object.values(TimePeriodEnum).map((key: keyof typeof powerUsage) => (
             <Button
               key={key}
-              variant={timePeriodState === key ? "solid" : "outline"}
-              onPress={() => setTimePeriodState(key)}
+              variant={timePeriod === key ? "solid" : "outline"}
+              onPress={() => changeTimePeriod(key)}
               size="sm"
-              className="border-0 rounded-3xl mx-2"
+              className="border-0 rounded-lg mx-2"
             >
               <Text
-                className={
-                  timePeriodState === key ? "text-white" : "text-black"
-                }
+                className={timePeriod === key ? "text-white" : "text-black"}
                 size="sm"
               >
                 {key.toUpperCase()}
@@ -162,7 +193,7 @@ export default function DashboardScreen() {
           <Center>
             <LineChart
               data={
-                showProduced ? powerUsage[timePeriodState].produced : undefined
+                showProduced ? powerUsage[timePeriod].produced : undefined
               }
               color={ChartColors.production.lineGraph.toString()}
               startFillColor={ChartColors.production.lineGraph.toString()}
@@ -170,7 +201,7 @@ export default function DashboardScreen() {
               startOpacity={0.9}
               endOpacity={0.2}
               data2={
-                showConsumed ? powerUsage[timePeriodState].consumed : undefined
+                showConsumed ? powerUsage[timePeriod].consumed : undefined
               }
               color2={ChartColors.consumtion.lineGraph.toString()}
               startFillColor2={ChartColors.consumtion.lineGraph.toString()}
@@ -192,8 +223,8 @@ export default function DashboardScreen() {
               showFractionalValues
               showVerticalLines
               adjustToWidth={
-                timePeriodState !== TimePeriod.hourly &&
-                timePeriodState !== TimePeriod.daily
+                timePeriod !== TimePeriodEnum.hourly &&
+                timePeriod !== TimePeriodEnum.daily
               }
               curved
               areaChart
@@ -266,7 +297,7 @@ export default function DashboardScreen() {
           {/* Breakdown Chart */}
           <Center>
             <PieChart
-              data={breakdownOverall[timePeriodState].produced}
+              data={breakdownOverall[timePeriod].produced}
               donut
               radius={110}
               innerRadius={70}
@@ -289,14 +320,14 @@ export default function DashboardScreen() {
                   <Center>
                     <Text className="font-bold" size="lg">
                       {`${metricPercentage(
-                        breakdownOverall[timePeriodState].produced,
+                        breakdownOverall[timePeriod].produced,
                         breakDownMetric
                       ).toFixed(1)}%`}
                     </Text>
                     <Divider orientation="horizontal" className="w-full" />
                     <Text className="font-bold" size="lg">
                       {`${getPower(
-                        breakdownOverall[timePeriodState].produced,
+                        breakdownOverall[timePeriod].produced,
                         breakDownMetric
                       ).toFixed(1)} kWh`}
                     </Text>
@@ -310,7 +341,7 @@ export default function DashboardScreen() {
 
           <BreakdownLegends
             className="mt-6 w-full px-6"
-            overallBreakDown={breakdownOverall[timePeriodState].produced}
+            overallBreakDown={breakdownOverall[timePeriod].produced}
             breakDownMetric={breakDownMetric}
             usageType="production"
           />
@@ -334,6 +365,66 @@ export default function DashboardScreen() {
             height={200}
           /> */}
         </Box>
+
+        <VStack className="justify-center gap-7 px-6 mb-6">
+          <Heading className="text-center" size="xl">Cleaning</Heading>
+
+          {/* Cleaning Progress */}
+          <CleaningProgress value={25} />
+
+          <CleaningContainer
+            type={cleanMethod}
+            sliderValue={sensorCleanThreshold}
+            setSliderValue={setSensorCleanThreshold}
+          />
+
+          {/* Clean Method Select Button */}
+          <Button className="w-fit rounded-lg self-center" onPress={openActionSheet}>
+            <ButtonText>
+              Cleaning Method
+            </ButtonText>
+          </Button>
+
+          {/* Action Sheet */}
+          <Actionsheet isOpen={showOuterActionSheet} snapPoints={[40]} onClose={closeActionSheet}>
+            <ActionsheetBackdrop />
+            <ActionsheetContent>
+
+              <ActionsheetDragIndicatorWrapper>
+                <ActionsheetDragIndicator />
+              </ActionsheetDragIndicatorWrapper>
+
+              <HStack className="w-full mt-2 mb-4 justify-center items-center">
+                <Heading>Choose Cleaning Method</Heading>
+              </HStack>
+
+              <Divider orientation="horizontal" className="h-[1px] w-full" />
+
+              <ActionsheetItem onPress={() => selectSolarCleanMethod("manual")}>
+                <ActionsheetIcon size="md" as={UserIcon} />
+                <ActionsheetItemText size="md">Manual</ActionsheetItemText>
+              </ActionsheetItem>
+
+              <Divider orientation="horizontal" className="h-[1px] w-full" />
+
+              <ActionsheetSectionHeaderText size="md" className="w-full text-left">Automatic (2)</ActionsheetSectionHeaderText>
+
+
+              <ActionsheetItem onPress={() => selectSolarCleanMethod("sensor")}>
+                <ActionsheetIcon size="md" as={ActivityIcon} />
+                <ActionsheetItemText size="md">Sensor Detection</ActionsheetItemText>
+              </ActionsheetItem>
+
+              <ActionsheetItem onPress={() => selectSolarCleanMethod("timer")}>
+                <ActionsheetIcon size="md" as={TimerIcon} />
+                <ActionsheetItemText size="md">Timer</ActionsheetItemText>
+              </ActionsheetItem>
+
+              <Divider orientation="horizontal" className="h-[1px] w-full" />
+
+            </ActionsheetContent>
+          </Actionsheet>
+        </VStack>
       </ScrollView>
     </SafeAreaView>
   );

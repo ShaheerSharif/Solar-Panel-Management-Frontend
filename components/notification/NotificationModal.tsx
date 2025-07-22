@@ -19,22 +19,20 @@ export function NotificationModal({
 
   if (notification !== null) {
     return (
-      <Center>
-        <Modal isOpen={showModal} onClose={onClose}>
-          <ModalBackdrop />
-          <ModalContent>
-            <ModalHeader className="flex-col items-start gap-0.5">
-              <Heading>{notification.title}</Heading>
-              <Text size="sm" className="color-slate-400">{getNotificationMsgTime(notification.timestamp)}</Text>
-            </ModalHeader>
-            <ScrollView>
-              <ModalBody>
-                <Text>{notification.message}</Text>
-              </ModalBody>
-            </ScrollView>
-          </ModalContent>
-        </Modal>
-      </Center>
+      <Modal isOpen={showModal} onClose={onClose}>
+        <ModalBackdrop />
+        <ModalContent>
+          <ModalHeader className="flex-col items-start gap-0.5">
+            <Heading>{notification.title}</Heading>
+            <Text size="sm" className="color-slate-400">{getNotificationMsgTime(notification.timestamp)}</Text>
+          </ModalHeader>
+          <ScrollView>
+            <ModalBody>
+              <Text>{notification.message}</Text>
+            </ModalBody>
+          </ScrollView>
+        </ModalContent>
+      </Modal>
     )
   }
 }

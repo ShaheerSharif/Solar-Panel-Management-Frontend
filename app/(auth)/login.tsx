@@ -14,14 +14,15 @@ import {
   FormControlLabelText,
 } from "@/components/ui/form-control";
 import { VStack } from "@/components/ui/vstack";
-import { AlertCircleIcon, EyeIcon, EyeOffIcon } from "@/components/ui/icon";
-import { Button, ButtonText } from "@/components/ui/button";
+import { AlertCircleIcon, EyeIcon, EyeOffIcon, ArrowRightIcon } from "lucide-react-native";
+import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
 import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
-import { Center } from "@/components/ui/center";
-import { Link, LinkText } from "@/components/ui/link";
 import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 export default function LoginScreen() {
+  const PASS_LENGTH = 6;
+
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const [verifyStatus, setVerifyStatus] = useState<boolean>();
@@ -31,9 +32,7 @@ export default function LoginScreen() {
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState<
-    boolean | undefined
-  >();
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean | undefined>();
 
   const checkEmailValid = () => {
     setIsEmailInvalid(email === undefined || email === "");
@@ -69,89 +68,82 @@ export default function LoginScreen() {
 
   return (
     <SafeAreaView edges={["top", "bottom"]}>
-      <Center className="h-full rounded">
-        <VStack className="w-full max-w-[300px] p-4">
-          <Heading className="mb-5 self-center" size={"2xl"}>
-            Login
-          </Heading>
-          {/* Email */}
-          <FormControl size="lg" isRequired={true} isInvalid={isEmailInvalid}>
-            <FormControlLabel>
-              <FormControlLabelText>Email</FormControlLabelText>
-            </FormControlLabel>
-            <Input className="my-1" variant="rounded" size="lg">
-              <InputField
-                type="text"
-                placeholder="Enter email"
-                value={email}
-                onChangeText={(text) => setEmail(text)}
-              />
-            </Input>
-            <FormControlError>
-              <FormControlErrorIcon as={AlertCircleIcon} />
-              <FormControlErrorText>{emailErrMsg()}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
+      <VStack className="w-full h-full px-8 justify-center items-start gap-4">
+        <Heading className="w-full text-center" size="2xl">Login</Heading>
+        {/* Email */}
+        <FormControl size="lg" isRequired={true} isInvalid={isEmailInvalid}>
+          <FormControlLabel>
+            <FormControlLabelText>Email</FormControlLabelText>
+          </FormControlLabel>
+          <Input className="w-full rounded-lg" variant="outline" size="lg">
+            <InputField
+              type="text"
+              placeholder="Enter email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+            />
+          </Input>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon} />
+            <FormControlErrorText>{emailErrMsg()}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
 
-          {/* Password */}
-          <FormControl isRequired={true} isInvalid={isPasswordInvalid}>
-            <FormControlLabel className="mt-4">
-              <FormControlLabelText>Password</FormControlLabelText>
-            </FormControlLabel>
-            <Input className="my-1" variant="rounded" size="lg">
-              <InputField
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-              />
-              <InputSlot
-                className="pr-3"
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
-              </InputSlot>
-            </Input>
-            <FormControlHelper>
-              <FormControlHelperText>
-                Must be atleast 6 characters
-              </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-              <FormControlErrorIcon as={AlertCircleIcon} />
-              <FormControlErrorText>{passwordErrMsg()}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
+        {/* Password */}
+        <FormControl isRequired={true} isInvalid={isPasswordInvalid}>
+          <FormControlLabel>
+            <FormControlLabelText>Password</FormControlLabelText>
+          </FormControlLabel>
+          <Input className="w-full rounded-lg justify-between" variant="outline" size="lg">
+            <InputField
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+            />
+            <InputSlot
+              className="pr-3"
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+            </InputSlot>
+          </Input>
+          <FormControlHelper>
+            <FormControlHelperText>
+              {`Must be atleast ${PASS_LENGTH} characters`}
+            </FormControlHelperText>
+          </FormControlHelper>
+          <FormControlError>
+            <FormControlErrorIcon as={AlertCircleIcon} />
+            <FormControlErrorText>{passwordErrMsg()}</FormControlErrorText>
+          </FormControlError>
+        </FormControl>
 
-          <Link
-            onPress={(e) => {
-              e?.preventDefault();
-              router.push("/(auth)/forgot-password")
-            }}
-            className="mt-4 self-end"
-          >
-            <LinkText>Forgot Password?</LinkText>
-          </Link>
+        <Button
+          onPress={() => router.push("/(auth)/forgot-password")}
+          variant="link"
+        >
+          <Text className="underline">Forgot Password?</Text>
+        </Button>
 
-          <Button
-            className="w-60 mt-10 rounded-full self-center"
-            size="lg"
-            onPress={handlelogin}
-          >
-            <ButtonText>Login</ButtonText>
-          </Button>
+        <Button
+          className="w-full rounded-lg"
+          size="lg"
+          onPress={handlelogin}
+        >
+          <ButtonText>Login</ButtonText>
+        </Button>
 
-          <Link
-            onPress={(e) => {
-              e?.preventDefault();
-              router.replace("/(auth)/signup")
-            }}
-            className="mt-4 self-center"
-          >
-            <LinkText>Don't have an account?</LinkText>
-          </Link>
-        </VStack>
-      </Center>
+        <Button
+          variant="link"
+          className="gap-1"
+          onPress={() => router.push("/(auth)/signup")}
+        >
+          <ButtonIcon as={ArrowRightIcon} />
+          <ButtonText>Don't have an account?</ButtonText>
+        </Button>
+
+      </VStack>
     </SafeAreaView>
   );
 }

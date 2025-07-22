@@ -24,7 +24,7 @@ export const ChartColors: {
   },
 };
 
-export enum TimePeriod {
+export enum TimePeriodEnum {
   hourly = "hourly",
   daily = "daily",
   weekly = "weekly",
