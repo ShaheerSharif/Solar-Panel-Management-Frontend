@@ -26,53 +26,68 @@ export default function SignupScreen() {
 
   const router = useRouter();
   const authContext = useContext(AuthContext);
-  const [signupStatus, setSignupStatus] = useState<boolean>();
 
   const [email, setEmail] = useState("");
-  const [isEmailInvalid, setIsEmailInvalid] = useState<boolean | undefined>();
+  const [isEmailInvalid, setIsEmailInvalid] = useState(false);
+  const [emailErr, setEmailErr] = useState<string>();
 
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState<boolean | undefined>();
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
+  const [passwordErr, setPasswordErr] = useState<string>();
 
-  const checkEmail = () => {
-    setIsEmailInvalid(email === undefined || email === "");
+  const isEmpty = (str: string) => {
+    return str === undefined || str === "";
+  }
+
+  const checkEmailFormat = () => {
+    return !isEmpty(email);
   };
 
-  const checkPassword = () => {
-    setIsPasswordInvalid(password === undefined || password.length < PASS_LENGTH);
+  const checkPasswordFormat = () => {
+    return !isEmpty(password) && password.length >= PASS_LENGTH;
   };
 
   const handleSignup = () => {
-    checkEmail();
-    checkPassword();
+    const emailStatus = checkEmailFormat();
+    const passwordStatus = checkPasswordFormat();
 
-    if (!isEmailInvalid && !isPasswordInvalid) {
-
-      setSignupStatus(authContext.signup(email, password));
-
-      if (signupStatus) router.replace("/(auth)/login");
+    if (!emailStatus) {
+      setEmailErr("Email is required");
+      setIsEmailInvalid(true);
     }
-  };
 
-  const emailErrMsg = (): string => {
-    if (!email) return "Email is required";
-    if (!signupStatus) return "Incorrect email or password";
-    return "";
-  };
+    if (!passwordStatus) {
+      if (isEmpty(password)) {
+        setPasswordErr("Password is required");
+      }
+      else {
+        setPasswordErr(`Must be atleast ${PASS_LENGTH} characters`);
+      }
+      setIsPasswordInvalid(true);
+    }
 
-  const passwordErrMsg = (): string => {
-    if (!password) return "Password is required";
-    if (password.length < PASS_LENGTH) return `Password must have atleast ${PASS_LENGTH} characters`;
-    if (!signupStatus) return "Incorrect email or password";
-    return "";
+    if (emailStatus && passwordStatus) {
+
+      const signupStatus = authContext.signup(email, password);
+
+      if (!signupStatus) {
+        setEmailErr("Incorrect email or password");
+        setPasswordErr("Incorrect email or password");
+        setIsEmailInvalid(true);
+        setIsPasswordInvalid(true);
+      }
+      else {
+        router.replace("/(tabs)/dashboard");
+      }
+    }
   };
 
   return (
     <SafeAreaView edges={["top", "bottom"]}>
       <VStack className="w-full h-full justify-center items-start px-8 gap-4">
         <Heading className="w-full text-center" size="2xl">
-          SignUp
+          Sign Up
         </Heading>
 
         {/* Email */}
@@ -90,7 +105,7 @@ export default function SignupScreen() {
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon} />
-            <FormControlErrorText>{emailErrMsg()}</FormControlErrorText>
+            <FormControlErrorText>{emailErr}</FormControlErrorText>
           </FormControlError>
         </FormControl>
 
@@ -120,7 +135,7 @@ export default function SignupScreen() {
           </FormControlHelper>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon} />
-            <FormControlErrorText>{passwordErrMsg()}</FormControlErrorText>
+            <FormControlErrorText>{passwordErr}</FormControlErrorText>
           </FormControlError>
         </FormControl>
 

@@ -31,36 +31,35 @@ import { Heading } from "@/components/ui/heading";
 export default function ForgotPasswordScreen() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
+
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-
-  const [emailExists, setEmailExists] = useState<boolean>();
   const [isEmailInvalid, setIsEmailInvalid] = useState<boolean | undefined>();
+  const [emailErr, setEmailErr] = useState<string>();
 
+  const [code, setCode] = useState("");
   const [showOTP, setShowOTP] = useState(false);
 
-  const checkEmailValid = () => {
-    setIsEmailInvalid(email === undefined || email === "");
+  const checkEmailFormat = () => {
+    return email !== undefined && email !== "";
   };
 
   const handleReset = () => {
-    checkEmailValid();
+    const emailStatus = checkEmailFormat();
 
-    if (!isEmailInvalid) {
-      const result = authContext.passwordReset(email);
-
-      setEmailExists(result);
-
-      if (emailExists) {
-        setShowOTP(true);
-      }
+    if (!emailStatus) {
+      setEmailErr("Email is required");
+      setIsEmailInvalid(true);
+      return;
     }
-  };
 
-  const emailErrMsg = (): string => {
-    if (!email) return "Email is required";
-    if (!emailExists) return "Email does not exist";
-    return "";
+    const emailExists = authContext.passwordReset(email);
+
+    if (!emailExists) {
+      setEmailErr("Incorrect email");
+      return;
+    }
+
+    setShowOTP(true);
   };
 
   return (
@@ -83,7 +82,7 @@ export default function ForgotPasswordScreen() {
           </Input>
           <FormControlError>
             <FormControlErrorIcon as={AlertCircleIcon} />
-            <FormControlErrorText>{emailErrMsg()}</FormControlErrorText>
+            <FormControlErrorText>{emailErr}</FormControlErrorText>
           </FormControlError>
         </FormControl>
 
@@ -105,7 +104,14 @@ export default function ForgotPasswordScreen() {
         </Button>
       </VStack>
 
-      <Modal isOpen={showOTP} onClose={() => setShowOTP(false)} className="rounded-lg">
+      <Modal
+        className="rounded-lg"
+        isOpen={showOTP}
+        onClose={() => {
+          setIsEmailInvalid(false);
+          setShowOTP(false);
+        }}
+      >
         <ModalBackdrop />
         <ModalContent>
           <ModalHeader className="flex-col items-start gap-0.5">
@@ -120,11 +126,7 @@ export default function ForgotPasswordScreen() {
             </Input>
           </ModalBody>
           <ModalFooter className="flex-col items-start">
-            <Button className="w-full rounded-lg"
-              onPress={
-                () => { }
-              }
-            >
+            <Button className="w-full rounded-lg" onPress={() => { }}>
               <ButtonText>Continue</ButtonText>
             </Button>
             <VStack className="gap-1">

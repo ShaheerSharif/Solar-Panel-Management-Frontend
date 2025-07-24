@@ -29,17 +29,16 @@ function CleaningContainer({ type, sliderValue: sliderValue, setSliderValue }: C
   else if (type === "sensor") {
     return (
       <VStack className="gap-4 items-center">
-        <Heading className="text-center">Sensor</Heading>
         <Slider value={sliderValue} minValue={25} maxValue={75} step={5} onChange={setSliderValue}>
-          <SliderTrack>
-            <SliderFilledTrack />
+          <SliderTrack className="bg-blue-100">
+            <SliderFilledTrack className="bg-blue-400" />
           </SliderTrack>
-          <SliderThumb />
+          <SliderThumb className="bg-blue-500" />
         </Slider>
         <HStack>
-          <Text>Clean panels at: </Text>
-          <Text className="font-bold underline">{sliderValue.toString()}</Text>
-          <Text>% Dust accumlation</Text>
+          <Text className="text-typography-400">Clean panels at: </Text>
+          <Text className="font-bold">{`${sliderValue.toString()}% `}</Text>
+          <Text className="text-typography-400">Dust accumlation</Text>
         </HStack>
       </VStack>
     )

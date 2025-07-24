@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { LineChart, BarChart, PieChart } from "react-native-gifted-charts";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MoveRightIcon, ActivityIcon, TimerIcon, UserIcon } from "lucide-react-native";
+import { MoveRightIcon, ActivityIcon, TimerIcon, UserIcon, ArrowUpRightFromSquareIcon } from "lucide-react-native";
 
 import { Text } from "@/components/ui/text";
 import { Box } from "@/components/ui/box";
@@ -367,23 +367,22 @@ export default function DashboardScreen() {
         </Box>
 
         <VStack className="justify-center gap-7 px-6 mb-6">
-          <Heading className="text-center" size="xl">Cleaning</Heading>
+
+          <HStack className="w-full justify-center items-center gap-1">
+            <Button variant="link" onPress={openActionSheet}>
+              <Heading size="xl">Cleaning</Heading>
+              <ArrowUpRightFromSquareIcon />
+            </Button>
+          </HStack>
 
           {/* Cleaning Progress */}
-          <CleaningProgress value={25} />
+          <CleaningProgress value={25} mode={cleanMethod} />
 
           <CleaningContainer
             type={cleanMethod}
             sliderValue={sensorCleanThreshold}
             setSliderValue={setSensorCleanThreshold}
           />
-
-          {/* Clean Method Select Button */}
-          <Button className="w-fit rounded-lg self-center" onPress={openActionSheet}>
-            <ButtonText>
-              Cleaning Method
-            </ButtonText>
-          </Button>
 
           {/* Action Sheet */}
           <Actionsheet isOpen={showOuterActionSheet} snapPoints={[40]} onClose={closeActionSheet}>
@@ -408,7 +407,6 @@ export default function DashboardScreen() {
               <Divider orientation="horizontal" className="h-[1px] w-full" />
 
               <ActionsheetSectionHeaderText size="md" className="w-full text-left">Automatic (2)</ActionsheetSectionHeaderText>
-
 
               <ActionsheetItem onPress={() => selectSolarCleanMethod("sensor")}>
                 <ActionsheetIcon size="md" as={ActivityIcon} />
