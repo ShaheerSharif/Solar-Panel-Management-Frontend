@@ -1,11 +1,12 @@
-import { useContext } from "react";
 import { Redirect, Stack } from "expo-router";
-import { AuthContext } from "@/utils/authContext";
+
+import { isLoggedIn } from "@/utils/userActions";
+import { useAuth } from "@/utils/authContext";
 
 export default function AuthLayout() {
-  const authContext = useContext(AuthContext);
+  const auth = useAuth();
 
-  if (authContext.isLoggedIn) {
+  if (isLoggedIn(auth.user)) {
     return <Redirect href={"/(tabs)/dashboard"} />;
   }
 

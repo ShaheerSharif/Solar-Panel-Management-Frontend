@@ -1,19 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { ScrollView, TouchableOpacity, StyleSheet } from "react-native";
-import { LineChart, BarChart, PieChart } from "react-native-gifted-charts";
+import { ArrowUpRightFromSquareIcon, DownloadIcon, TimerIcon, UploadIcon, UserIcon } from "lucide-react-native";
+import { useMemo, useState } from "react";
+import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { LineChart, PieChart } from "react-native-gifted-charts";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MoveRightIcon, ActivityIcon, TimerIcon, UserIcon, ArrowUpRightFromSquareIcon } from "lucide-react-native";
 
-import { Text } from "@/components/ui/text";
-import { Box } from "@/components/ui/box";
-import { Center } from "@/components/ui/center";
-import { Button, ButtonText } from "@/components/ui/button";
-import { HStack } from "@/components/ui/hstack";
-import { Divider } from "@/components/ui/divider";
-import { StatusMetricGroup } from "@/components/status-icons/StatusMetricGroup";
 import { BreakdownLegends } from "@/components/BreakdownLegends";
-import { VStack } from "@/components/ui/vstack";
-import { Heading } from "@/components/ui/heading";
+import { CleaningContainer, CleanType } from "@/components/cleaning";
+import { StatusMetricGroup } from "@/components/status-icons/StatusMetricGroup";
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -25,28 +18,32 @@ import {
   ActionsheetItemText,
   ActionsheetSectionHeaderText
 } from "@/components/ui/actionsheet";
-
-import {
-  generatePowerUsageData,
-  barData,
-  months,
-  weeks,
-  daily,
-  hours,
-  yearly,
-} from "@/utils/chart-data";
-
+import { Box } from "@/components/ui/box";
+import { Button } from "@/components/ui/button";
+import { Center } from "@/components/ui/center";
+import { Divider } from "@/components/ui/divider";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { ChartColors, TimePeriodEnum } from "@/constants/GraphConstants";
 import { BreakdownType } from "@/types/custom-types";
 import {
   generateBreakdownData,
   getPower,
-  metricPercentage,
-  totalPower,
+  metricPercentage
 } from "@/utils/breakdown-functions";
-import { ChartColors, TimePeriodEnum } from "@/constants/GraphConstants";
+import {
+  daily,
+  generatePowerUsageData,
+  hours,
+  months,
+  weeks,
+  yearly
+} from "@/utils/chart-data";
 import { capitalize } from "@/utils/str-functions";
-import { CleaningContainer, CleanType } from "@/components/cleaning/CleaningContainer";
-import { CleaningProgress } from "@/components/cleaning/CleaningProgress";
+
+type BreakdownModeType = "production" | "consumption"
 
 export default function DashboardScreen() {
   const [timePeriod, setTimePeriod] = useState<TimePeriodEnum>(TimePeriodEnum.hourly);
@@ -54,30 +51,40 @@ export default function DashboardScreen() {
   const [showProduced, setShowProduced] = useState(true);
   const [showConsumed, setShowConsumed] = useState(true);
 
-  const [breakDownMetric, setBreakDownMetric] = useState<BreakdownType["text"] | null>(null);
+  const [breakDownMetric, setBreakDownMetric] = useState<BreakdownType["text"]>("solar");
 
-  const [showOuterActionSheet, setShowOuterActionSheet] = useState(false);
-
+  const [showCleaningActionSheet, setShowCleaningActionSheet] = useState(false);
   const [cleanMethod, setCleanMethod] = useState<CleanType>("timer");
   const [sensorCleanThreshold, setSensorCleanThreshold] = useState(40);
 
-  const changeTimePeriod = (key: TimePeriodEnum) => {
-    setTimePeriod(key);
-    setBreakDownMetric(null);
-  }
+  const [showBreakdownActionSheet, setShowBreakdownActionSheet] = useState(false);
+  const [breakdownMode, setBreakdownMode] = useState<BreakdownModeType>("consumption");
 
-  const openActionSheet = () => setShowOuterActionSheet(true)
+  const changeTimePeriod = (key: TimePeriodEnum) => setTimePeriod(key);
 
-  const closeActionSheet = () => setShowOuterActionSheet(false)
+  const openCleaningSheet = () => setShowCleaningActionSheet(true)
+
+  const closeCleaningSheet = () => setShowCleaningActionSheet(false)
+
+  const openBreakdownSheet = () => setShowBreakdownActionSheet(true)
+
+  const closeBreakdownSheet = () => setShowBreakdownActionSheet(false)
 
   const selectSolarCleanMethod = (method: CleanType) => {
     if (method !== cleanMethod) {
-      setCleanMethod(method);
+      setCleanMethod(method)
     }
-    closeActionSheet();
+    closeCleaningSheet()
   }
 
-  const [min, max] = [1, 9.5];
+  const selectBreakdownMode = (mode: BreakdownModeType) => {
+    if (mode !== breakdownMode) {
+      selectBreakdownMode(mode)
+    }
+    closeBreakdownSheet()
+  }
+
+  const [min, max] = [1, 9.5]
 
   const powerUsage = useMemo(
     (): Record<
@@ -290,11 +297,15 @@ export default function DashboardScreen() {
             <Divider orientation="horizontal" className="w-11/12" />
           </Center>
 
-          <Text size="2xl" className="bold mb-4 text-center" bold>
-            Usage Breakdown
-          </Text>
-
           {/* Breakdown Chart */}
+
+          <HStack className="w-full justify-center items-center gap-1">
+            <Button variant="link" onPress={openBreakdownSheet}>
+              <Heading size="xl">Usage Breakdown</Heading>
+              <ArrowUpRightFromSquareIcon />
+            </Button>
+          </HStack>
+
           <Center>
             <PieChart
               data={breakdownOverall[timePeriod].produced}
@@ -306,16 +317,6 @@ export default function DashboardScreen() {
               animationDuration={1000}
               onPress={(item: BreakdownType) => setBreakDownMetric(item.text)}
               centerLabelComponent={() => {
-                if (!breakDownMetric) {
-                  return (
-                    <Center>
-                      <Text size="4xl" className="font-bold">
-                        -
-                      </Text>
-                    </Center>
-                  );
-                }
-
                 return (
                   <Center>
                     <Text className="font-bold" size="lg">
@@ -349,80 +350,78 @@ export default function DashboardScreen() {
           <Center className="my-6">
             <Divider orientation="horizontal" className="w-11/12" />
           </Center>
-
-          {/* <Text style={{ fontSize: 18, marginTop: 24, marginBottom: 8 }}>
-            Monthly Output (Bar Chart)
-          </Text>
-
-          <BarChart
-            data={barData}
-            barWidth={22}
-            spacing={24}
-            barBorderRadius={4}
-            frontColor="#1e90ff"
-            yAxisTextStyle={{ color: "#999" }}
-            xAxisLabelTextStyle={{ color: "#333" }}
-            height={200}
-          /> */}
         </Box>
 
         <VStack className="justify-center gap-7 px-6 mb-6">
 
           <HStack className="w-full justify-center items-center gap-1">
-            <Button variant="link" onPress={openActionSheet}>
+            <Button variant="link" onPress={openCleaningSheet}>
               <Heading size="xl">Cleaning</Heading>
               <ArrowUpRightFromSquareIcon />
             </Button>
           </HStack>
 
           {/* Cleaning Progress */}
-          <CleaningProgress value={25} mode={cleanMethod} />
+          {/* <CleaningProgress value={25} mode={cleanMethod} /> */}
 
           <CleaningContainer
             type={cleanMethod}
             sliderValue={sensorCleanThreshold}
             setSliderValue={setSensorCleanThreshold}
           />
-
-          {/* Action Sheet */}
-          <Actionsheet isOpen={showOuterActionSheet} snapPoints={[40]} onClose={closeActionSheet}>
-            <ActionsheetBackdrop />
-            <ActionsheetContent>
-
-              <ActionsheetDragIndicatorWrapper>
-                <ActionsheetDragIndicator />
-              </ActionsheetDragIndicatorWrapper>
-
-              <HStack className="w-full mt-2 mb-4 justify-center items-center">
-                <Heading>Choose Cleaning Method</Heading>
-              </HStack>
-
-              <Divider orientation="horizontal" className="h-[1px] w-full" />
-
-              <ActionsheetItem onPress={() => selectSolarCleanMethod("manual")}>
-                <ActionsheetIcon size="md" as={UserIcon} />
-                <ActionsheetItemText size="md">Manual</ActionsheetItemText>
-              </ActionsheetItem>
-
-              <Divider orientation="horizontal" className="h-[1px] w-full" />
-
-              <ActionsheetSectionHeaderText size="md" className="w-full text-left">Automatic (2)</ActionsheetSectionHeaderText>
-
-              <ActionsheetItem onPress={() => selectSolarCleanMethod("sensor")}>
-                <ActionsheetIcon size="md" as={ActivityIcon} />
-                <ActionsheetItemText size="md">Sensor Detection</ActionsheetItemText>
-              </ActionsheetItem>
-
-              <ActionsheetItem onPress={() => selectSolarCleanMethod("timer")}>
-                <ActionsheetIcon size="md" as={TimerIcon} />
-                <ActionsheetItemText size="md">Timer</ActionsheetItemText>
-              </ActionsheetItem>
-
-              <Divider orientation="horizontal" className="h-[1px] w-full" />
-
-            </ActionsheetContent>
-          </Actionsheet>
         </VStack>
+
+        {/* Breakdown Action Sheet */}
+        <Actionsheet isOpen={showBreakdownActionSheet} snapPoints={[40]} onClose={closeBreakdownSheet}>
+          <ActionsheetBackdrop />
+          <ActionsheetContent>
+            <ActionsheetDragIndicatorWrapper>
+              <ActionsheetDragIndicator />
+            </ActionsheetDragIndicatorWrapper>
+            <HStack className="w-full mt-2 mb-4 justify-center items-center">
+              <Heading>Choose Breakdown Mode</Heading>
+            </HStack>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+            <ActionsheetItem onPress={() => selectSolarCleanMethod("manual")}>
+              <ActionsheetIcon size="md" as={UploadIcon} />
+              <ActionsheetItemText size="md">Production</ActionsheetItemText>
+            </ActionsheetItem>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+            <ActionsheetItem onPress={() => selectSolarCleanMethod("manual")}>
+              <ActionsheetIcon size="md" as={DownloadIcon} />
+              <ActionsheetItemText size="md">Consumption</ActionsheetItemText>
+            </ActionsheetItem>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+          </ActionsheetContent>
+        </Actionsheet>
+
+        {/* Cleaning Action Sheet */}
+        <Actionsheet isOpen={showCleaningActionSheet} snapPoints={[40]} onClose={closeCleaningSheet}>
+          <ActionsheetBackdrop />
+          <ActionsheetContent>
+            <ActionsheetDragIndicatorWrapper>
+              <ActionsheetDragIndicator />
+            </ActionsheetDragIndicatorWrapper>
+            <HStack className="w-full mt-2 mb-4 justify-center items-center">
+              <Heading>Choose Cleaning Method</Heading>
+            </HStack>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+            <ActionsheetItem onPress={() => selectSolarCleanMethod("manual")}>
+              <ActionsheetIcon size="md" as={UserIcon} />
+              <ActionsheetItemText size="md">Manual</ActionsheetItemText>
+            </ActionsheetItem>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+            <ActionsheetSectionHeaderText size="md" className="w-full text-left">
+              Automatic
+            </ActionsheetSectionHeaderText>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+            <ActionsheetItem onPress={() => selectSolarCleanMethod("timer")}>
+              <ActionsheetIcon size="md" as={TimerIcon} />
+              <ActionsheetItemText size="md">Timer</ActionsheetItemText>
+            </ActionsheetItem>
+            <Divider orientation="horizontal" className="h-[1px] w-full" />
+          </ActionsheetContent>
+        </Actionsheet>
       </ScrollView>
     </SafeAreaView>
   );

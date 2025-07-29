@@ -1,12 +1,18 @@
+import { useEffect, useState } from "react";
+
 import { Box } from "../ui/box";
-import { Text } from "../ui/text";
+import { Button, ButtonSpinner, ButtonText } from "../ui/button";
 import { Heading } from "../ui/heading";
 import { HStack } from "../ui/hstack";
-import { Button, ButtonText } from "../ui/button";
 import { Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "../ui/slider";
+import { Text } from "../ui/text";
 import { VStack } from "../ui/vstack";
 
-type CleanType = "sensor" | "timer" | "manual";
+import { useAuth } from "@/utils/authContext";
+import { getCleaningRef, triggerCleaning } from "@/utils/espControl";
+import { off, onValue } from "firebase/database";
+
+type CleanType = "sensor" | "timer" | "manual"
 
 type CleaningContainerProps = {
   type: CleanType,
@@ -15,12 +21,57 @@ type CleaningContainerProps = {
 }
 
 function CleaningContainer({ type, sliderValue: sliderValue, setSliderValue }: CleaningContainerProps) {
+  const auth = useAuth();
+
+  // Once `isCleaing` is set to `true` using `triggerCleaning`,
+  // The value changes in firebase after 5 seconds to `false`,
+  // Once it is set to false then set `isCleaning` to `false`
+  const [isCleaning, setIsCleaning] = useState(false);
+
+  const handleCleaning = async () => {
+    const success = await triggerCleaning(auth);
+    setIsCleaning(success);
+
+    if (success) {
+      console.log("Cleaning command sent.");
+    } else {
+      console.log("Failed to send cleaning command.");
+    }
+  }
+
+  useEffect(() => {
+    const listenCleaning = async () => {
+      if (!auth) return
+
+      const cleaningRef = await getCleaningRef(auth);
+
+      // is this correct? `unsubscribe` is unused
+
+      const unsubscribe = onValue(cleaningRef, snapshot => {
+        const value = snapshot.val()
+        if (value === false) {
+          setIsCleaning(false)
+        }
+      })
+
+      return () => off(cleaningRef);
+    }
+
+    listenCleaning();
+  }, [auth])
+
   if (type === "manual") {
     return (
       <HStack className="justify-between items-center">
         <Heading>Manual</Heading>
-        <Button action="negative" className="rounded-lg" onPress={() => { }}>
-          <ButtonText>Clean Now</ButtonText>
+        <Button
+          action={isCleaning ? "primary" : "negative"}
+          className="rounded-lg"
+          onPress={handleCleaning}
+          disabled={!isCleaning}
+        >
+          <ButtonText>{isCleaning ? "Cleaning" : "Clean Now"}</ButtonText>
+          {isCleaning && <ButtonSpinner />}
         </Button>
       </HStack>
     )
@@ -53,4 +104,4 @@ function CleaningContainer({ type, sliderValue: sliderValue, setSliderValue }: C
   }
 }
 
-export { CleanType, CleaningContainer }
+export { CleaningContainer, CleanType };

@@ -2,12 +2,11 @@ import { useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ArrowUpIcon } from "lucide-react-native";
-import { Fab, FabIcon } from "@/components/ui/fab";
 import { Divider } from "@/components/ui/divider";
+import { Fab, FabIcon } from "@/components/ui/fab";
+import { ArrowUpIcon } from "lucide-react-native";
 
-import { NotificationButton } from "@/components/notification/NotificationButton";
-import { NotificationModal } from "@/components/notification/NotificationModal";
+import { NotificationButton, NotificationModal } from "@/components/notification";
 
 import { NotificationType, generateNotificationData } from "@/utils/notification-helpers";
 

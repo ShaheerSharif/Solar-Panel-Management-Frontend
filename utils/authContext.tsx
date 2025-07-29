@@ -1,77 +1,36 @@
-import { useRouter } from "expo-router";
-import { createContext, PropsWithChildren, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "@/firebaseConfig";
 
-const DUMMY_EMAIL = "abcd@gmail.com";
-const DUMMY_PASSWORD = "111111";
-
-type AuthState = {
-  isLoggedIn: boolean;
-  login: (email: string, password: string) => boolean;
-  signup: (email: string, password: string) => boolean;
-  passwordReset: (email: string) => boolean;
-  logout: () => void;
+type AuthContextType = {
+  user: User | null;
+  loading: boolean;
 };
 
-const AuthContext = createContext<AuthState>({
-  isLoggedIn: false,
-  login: () => false,
-  signup: () => false,
-  passwordReset: () => false,
-  logout: () => { },
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
 });
 
-function AuthProvider({ children }: PropsWithChildren) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // TODO Define login logic
-  const login = (
-    email: string,
-    password: string
-  ) => {
-    // TODO Dummy login logic (replace with real API later)
-    if (email === DUMMY_EMAIL && password === DUMMY_PASSWORD) {
-      setIsLoggedIn(true);
-      return true;
-    }
-
-    return false;
-  };
-
-  // TODO Define signup logic
-  const signup = (
-    email: string,
-    password: string
-  ) => {
-    if (!(email && password)) return false;
-
-    // TODO Dummy signup logic (replace with real API later)
-    return true;
-  };
-
-  // TODO Define password reset logic
-  const passwordReset = (
-    email: string
-  ) => {
-    if (email) {
-      // TODO Simulate password reset
-      return true;
-    }
-
-    return false;
-  };
-
-  // TODO Define logout logic
-  const logout = () => {
-    setIsLoggedIn(false);
-  };
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setLoading(false);
+    });
+    return unsub;
+  }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ isLoggedIn, login, logout, signup, passwordReset }}
-    >
+    <AuthContext.Provider value={{ user, loading }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
-export { AuthContext, AuthProvider }
+const useAuth = () => useContext(AuthContext)
+
+export { AuthContextType, AuthProvider, useAuth }

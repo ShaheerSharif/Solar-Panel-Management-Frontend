@@ -90,7 +90,7 @@ function CleaningProgress({ value, mode }: { value: number, mode: CleanType }) {
         const uniqueToastID = `toast-${id}`;
 
         return (
-          <Toast nativeID={uniqueToastID} action="info" variant="solid" className="mt-5">
+          <Toast nativeID={uniqueToastID} action="info" variant="solid" className="mt-20 w-8/12">
             <ToastTitle>{`${capitalize(mode)} Mode`}</ToastTitle>
             <ToastDescription>{getInfoMessage()}</ToastDescription>
           </Toast>

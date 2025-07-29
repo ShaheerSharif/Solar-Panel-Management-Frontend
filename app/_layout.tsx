@@ -1,23 +1,17 @@
-import { Ionicons } from "@expo/vector-icons";
-import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import "react-native-reanimated";
-import * as SplashScreen from "expo-splash-screen";
+import "@/global.css";
+import { AuthProvider } from "@/utils/authContext";
+import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
-import { AuthProvider } from "@/utils/authContext";
+import "react-native-reanimated";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useColorScheme } from "@/components/useColorScheme";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
+  ErrorBoundary
 } from "expo-router";
 
 export const unstable_settings = {
@@ -60,23 +54,21 @@ function RootLayoutNav() {
   // const colorScheme = useColorScheme();
 
   return (
-    <GluestackUIProvider mode="light">
-      <SafeAreaProvider>
-        <AuthProvider>
-          {/* <ThemeProvider
+    <SafeAreaProvider>
+      <AuthProvider>
+        {/* <ThemeProvider
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           > */}
-          <Stack>
-            <Stack.Screen
-              name="(auth)"
-              options={{ headerShown: false, gestureEnabled: false }}
-            />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="(modals)" options={{ presentation: "modal" }} />
-          </Stack>
-          {/* </ThemeProvider> */}
-        </AuthProvider>
-      </SafeAreaProvider>
-    </GluestackUIProvider>
+        <Stack>
+          <Stack.Screen
+            name="(auth)"
+            options={{ headerShown: false, gestureEnabled: false }}
+          />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(modals)" options={{ presentation: "modal" }} />
+        </Stack>
+        {/* </ThemeProvider> */}
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }

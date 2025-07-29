@@ -1,7 +1,7 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AuthContext } from "@/utils/authContext";
+import { useAuth } from "@/utils/authContext";
 
 import {
   FormControl,
@@ -30,7 +30,7 @@ import { Heading } from "@/components/ui/heading";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+  const authContext = useAuth();
 
   const [email, setEmail] = useState("");
   const [isEmailInvalid, setIsEmailInvalid] = useState<boolean | undefined>();

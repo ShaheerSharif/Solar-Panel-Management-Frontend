@@ -1,7 +1,8 @@
 import { useContext, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { AuthContext } from "@/utils/authContext";
+import { useAuth } from "@/utils/authContext";
+import { login, logout } from "@/utils/userActions"
 
 import {
   FormControl,
@@ -22,7 +23,6 @@ import { Text } from "@/components/ui/text";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [isEmailInvalid, setIsEmailInvalid] = useState<boolean>();
@@ -41,7 +41,7 @@ export default function LoginScreen() {
     return password !== undefined && password !== "";
   };
 
-  const handlelogin = () => {
+  const handlelogin = async () => {
     const emailStatus = checkEmailFormat();
     const passwordStatus = checkPasswordFormat();
 
@@ -56,20 +56,19 @@ export default function LoginScreen() {
     }
 
     if (emailStatus && passwordStatus) {
+      const result = await login(email, password);
 
-      const loginStatus = authContext.login(email, password);
-
-      if (!loginStatus) {
+      if (!result.success) {
         setEmailErr("Incorrect email or password");
         setPasswordErr("Incorrect email or password");
         setIsEmailInvalid(true);
         setIsPasswordInvalid(true);
-      }
-      else {
+      } else {
         router.replace("/(tabs)/dashboard");
       }
     }
   };
+
 
   return (
     <SafeAreaView edges={["top", "bottom"]}>
