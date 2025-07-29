@@ -47,7 +47,10 @@ npx expo start -c
 - Initialize a web app.
 - Build an email/password authentication database (without passwordless login).
 - Build a realtime database.
+- Initialize realtime database rules **(See rules below)**.
 - Copy the initial config to your **Expo** project and make the necessary changes **(See the example config below)**.
+
+**Example Config**
 
 ```ts
 import { initializeApp } from "firebase/app"
@@ -68,4 +71,33 @@ const auth = initializeAuth(app)
 const db = getDatabase(app)
 
 export { app, auth, db }
+```
+
+**rules.json** (Copy this to firebase rules)
+
+```json
+{
+  "rules": {
+    "devices": {
+      ".indexOn": ["owner_uid"],
+      "$deviceId": {
+        // Restrict read/write to the device owner only
+        ".read": "auth != null && data.child('owner_uid').val() === auth.uid",
+        ".write": "auth != null && data.child('owner_uid').val() === auth.uid",
+
+        // Optional: explicitly lock down ESP nodes (redundant but clearer)
+        "esp_inverter": {
+          "readings": {
+            ".read": "auth != null && root.child('devices').child($deviceId).child('owner_uid').val() === auth.uid",
+            ".write": "auth != null && root.child('devices').child($deviceId).child('owner_uid').val() === auth.uid"
+          }
+        },
+        "esp_cleaner": {
+          ".read": "auth != null && root.child('devices').child($deviceId).child('owner_uid').val() === auth.uid",
+          ".write": "auth != null && root.child('devices').child($deviceId).child('owner_uid').val() === auth.uid"
+        }
+      }
+    }
+  }
+}
 ```
