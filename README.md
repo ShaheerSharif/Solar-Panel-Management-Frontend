@@ -38,16 +38,19 @@ npx expo start -c
 - [gluestack-ui](https://gluestack.io/)
 - [Day.js](https://day.js.org/)
 - [Firebase](https://firebase.google.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
 
 ## Firebase example config
 
 - Create a `firebaseConfig.ts` file in project root.
 - Create a firebase project [here](https://console.firebase.google.com).
-- Initialize a web app
-- Copy the initial config and make the necessary changes **(See the example config)**.
+- Initialize a web app.
+- Build an email/password authentication database (without passwordless login).
+- Build a realtime database.
+- Copy the initial config to your **Expo** project and make the necessary changes **(See the example config below)**.
 
 ```ts
-import { initializeApp } from "firebase/app";
+import { initializeApp } from "firebase/app"
 import { initializeAuth } from "firebase/auth"
 import { getDatabase } from "firebase/database"
 
@@ -58,11 +61,11 @@ const firebaseConfig = {
   storageBucket: "your-web-app-name.firebasestorage.app",
   messagingSenderId: "YOUR_SENDER_ID",
   appId: "YOUR_APP_ID"
-};
+}
 
-const app = initializeApp(firebaseConfig);
-const auth = initializeAuth(app);
-const db = getDatabase(app);
+const app = initializeApp(firebaseConfig)
+const auth = initializeAuth(app)
+const db = getDatabase(app)
 
-export { app, auth, db };
+export { app, auth, db }
 ```
