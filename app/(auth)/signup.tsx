@@ -1,8 +1,3 @@
-import { useAuth } from "@/utils/authContext";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
@@ -17,15 +12,17 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { VStack } from "@/components/ui/vstack";
-import { signup } from "@/utils/userActions";
+import { signup } from "@/utils/auth-actions";
+import { useRouter } from "expo-router";
 import { AlertCircleIcon, ArrowLeftIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
+import { useState } from "react";
 import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignupScreen() {
   const PASS_LENGTH = 6;
 
   const router = useRouter();
-  const auth = useAuth();
 
   const [email, setEmail] = useState("");
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);

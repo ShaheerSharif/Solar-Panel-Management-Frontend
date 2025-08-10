@@ -10,8 +10,9 @@ import { VStack } from "@/components/ui/vstack";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-import { useAuth } from "@/utils/authContext";
-import { isLoggedIn, logout } from "@/utils/userActions";
+import { useAuth } from "@/hooks";
+import { logout } from "@/utils/auth-actions";
+import { isLoggedIn } from "@/utils/user-actions";
 import { Redirect, Tabs } from "expo-router";
 import { LogOutIcon, SunIcon } from "lucide-react-native";
 import { useState } from "react";
@@ -22,7 +23,7 @@ export default function TabLayout() {
   const title = "Solar Monitor";
   const colorScheme = useColorScheme();
 
-  if (!isLoggedIn(auth.user)) {
+  if (!isLoggedIn(auth)) {
     return <Redirect href="/(auth)/login" />;
   }
 
@@ -36,7 +37,6 @@ export default function TabLayout() {
         headerStyle: { backgroundColor: "#3b82f6" },
         headerTitle() {
           const user = auth.user
-          if (!user) console.log("User not authenticated")
           const email = user?.email
           const name = user?.displayName
 

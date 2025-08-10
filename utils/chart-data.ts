@@ -1,8 +1,3 @@
-import { ColorValue } from "react-native";
-import { BreakdownType } from "@/types/custom-types";
-import { ChartColorType, UsageType } from "@/types/custom-types";
-import { ChartColors } from "@/constants/GraphConstants";
-
 export const months = [
   "Jan",
   "Feb",
@@ -80,31 +75,6 @@ export const daily = [
   "30th",
   "31st",
 ];
-
-export const yearly = ["2020", "2021", "2022", "2023", "2024", "2025"];
-
-export const barData = [
-  { value: 20, label: "Jan" },
-  { value: 45, label: "Feb" },
-  { value: 28, label: "Mar" },
-  { value: 80, label: "Apr" },
-  { value: 99, label: "May" },
-  { value: 43, label: "Jun" },
-];
-
-export const pieData = {
-  produced: [
-    { value: 40, color: "#f00", text: "Solar" },
-    { value: 30, color: "#0f0", text: "Grid" },
-    { value: 30, color: "#00f", text: "Battery" },
-  ],
-
-  consumed: [
-    { value: 40, color: "#f00", text: "Solar" },
-    { value: 30, color: "#0f0", text: "Grid" },
-    { value: 30, color: "#00f", text: "Battery" },
-  ],
-};
 
 export function generatePowerUsageData(
   min: number,

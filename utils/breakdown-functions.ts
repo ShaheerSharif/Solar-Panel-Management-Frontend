@@ -1,5 +1,5 @@
-import { BreakdownType, ChartColorType, UsageType } from "@/types/custom-types";
 import { ChartColors } from "@/constants/GraphConstants";
+import { BreakdownType, ChartColorType } from "@/types/custom-types";
 
 export function totalPower(overallBreakdown: BreakdownType[]) {
   return overallBreakdown.reduce((sum, item) => item.value + sum, 0);
@@ -26,11 +26,10 @@ function generateBreakdown(
   min: number,
   max: number,
   colors: ChartColorType,
-  usageType: UsageType
 ): BreakdownType[] {
   return [
     {
-      text: usageType === "production" ? "solar" : "house",
+      text: "solar",
       value: Math.round((Math.random() * (max - min) + min) * 10) / 10,
       color: colors.pieColor2.toString(),
       gradientCenterColor: colors.pieGrad2.toString(),
@@ -41,23 +40,9 @@ function generateBreakdown(
       color: colors.pieColor1.toString(),
       gradientCenterColor: colors.pieGrad1.toString(),
     },
-    {
-      text: "battery",
-      value: Math.round((Math.random() * (max - min) + min) * 10) / 10,
-      color: colors.pieColor3.toString(),
-      gradientCenterColor: colors.pieGrad3.toString(),
-    },
   ];
 }
 
 export function generateBreakdownData(min: number, max: number) {
-  return {
-    produced: generateBreakdown(min, max, ChartColors.production, "production"),
-    consumed: generateBreakdown(
-      min,
-      max,
-      ChartColors.consumtion,
-      "consumption"
-    ),
-  };
+  return generateBreakdown(min, max, ChartColors.produced)
 }

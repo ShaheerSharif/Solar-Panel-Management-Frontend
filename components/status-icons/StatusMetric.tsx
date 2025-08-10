@@ -1,8 +1,8 @@
-import { LucideIcon, MoveRightIcon } from "lucide-react-native";
-import { Text } from "@/components/ui/text";
 import { Box } from "@/components/ui/box";
 import { HStack } from "@/components/ui/hstack";
 import { Icon } from "@/components/ui/icon/index.web";
+import { Text } from "@/components/ui/text";
+import { LucideIcon, MoveRightIcon } from "lucide-react-native";
 import { TextProps } from "react-native";
 
 const ColorToProp: Record<string, [string, TextProps["className"]]> = {
@@ -36,7 +36,7 @@ export function StatusMetric({
       <Icon as={icon} size="xl" color={iconColor} />
       <Box className="w-18">
         <Text className={`font-bold text-left ${textColor}`}>
-          {value} <Text className={`text-xs ${textColor}`}>kWh</Text>
+          {value} <Text className={`text-xs ${textColor}`}>Wh</Text>
         </Text>
         <Text className="text-xs text-left text-b">{detail}</Text>
       </Box>

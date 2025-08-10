@@ -1,14 +1,11 @@
+import { NotificationButton, NotificationModal } from "@/components/notification";
+import { Divider } from "@/components/ui/divider";
+import { Fab, FabIcon } from "@/components/ui/fab";
+import { NotificationType, generateNotificationData } from "@/utils/notification-helpers";
+import { ArrowUpIcon } from "lucide-react-native";
 import { useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { Divider } from "@/components/ui/divider";
-import { Fab, FabIcon } from "@/components/ui/fab";
-import { ArrowUpIcon } from "lucide-react-native";
-
-import { NotificationButton, NotificationModal } from "@/components/notification";
-
-import { NotificationType, generateNotificationData } from "@/utils/notification-helpers";
 
 export default function NotificationScreen() {
   const [showModal, setShowModal] = useState(false);

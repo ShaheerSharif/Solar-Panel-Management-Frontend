@@ -1,6 +1,6 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
-import { AuthProvider } from "@/utils/authContext";
+import { AuthProvider } from "@/providers/AuthProvider";
 import { Ionicons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";

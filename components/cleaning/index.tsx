@@ -1,4 +1,4 @@
-import { CleaningContainer, CleanType } from "./CleaningContainer";
-import { CleaningProgress } from "./CleaningProgress";
+import { CleaningContainer } from "./CleaningContainer"
+import { CleanTimerFreq, CleanType } from "./types"
 
-export { CleaningContainer, CleaningProgress, CleanType };
+export { CleaningContainer, CleanTimerFreq, CleanType }

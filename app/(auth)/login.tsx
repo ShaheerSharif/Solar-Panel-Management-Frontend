@@ -1,25 +1,22 @@
-import { useContext, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { login } from "@/utils/auth-actions";
 import { useRouter } from "expo-router";
-import { useAuth } from "@/utils/authContext";
-import { login, logout } from "@/utils/userActions"
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
   FormControlError,
   FormControlErrorIcon,
   FormControlErrorText,
-  FormControlHelper,
-  FormControlHelperText,
   FormControlLabel,
-  FormControlLabelText,
+  FormControlLabelText
 } from "@/components/ui/form-control";
-import { VStack } from "@/components/ui/vstack";
-import { AlertCircleIcon, EyeIcon, EyeOffIcon, ArrowRightIcon } from "lucide-react-native";
-import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
-import { Input, InputField, InputSlot, InputIcon } from "@/components/ui/input";
 import { Heading } from "@/components/ui/heading";
+import { Input, InputField, InputIcon, InputSlot } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
+import { AlertCircleIcon, ArrowRightIcon, EyeIcon, EyeOffIcon } from "lucide-react-native";
 
 export default function LoginScreen() {
   const router = useRouter();

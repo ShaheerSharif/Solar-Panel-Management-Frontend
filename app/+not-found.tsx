@@ -1,9 +1,9 @@
-import { useContext } from "react";
-import { Stack, useRouter } from "expo-router";
-import { StyleSheet, TouchableOpacity } from "react-native";
 import { Text, View } from "@/components/Themed";
+import { Stack, useRouter } from "expo-router";
+import { useContext } from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
-import { AuthContext } from "@/utils/authContext";
+import { AuthContext } from "@/providers/AuthProvider";
 
 export default function NotFoundScreen() {
   const authContext = useContext(AuthContext);

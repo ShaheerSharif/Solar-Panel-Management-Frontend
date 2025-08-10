@@ -1,3 +1,8 @@
+import { Center } from "@/components/ui/center";
+import { HStack } from "@/components/ui/hstack";
+import { Icon } from "@/components/ui/icon/index.web";
+import { Text } from "@/components/ui/text";
+import { VStack } from "@/components/ui/vstack";
 import {
   ArrowDownIcon,
   ArrowUpIcon,
@@ -6,11 +11,6 @@ import {
   HouseIcon,
   SunIcon,
 } from "lucide-react-native";
-import { Text } from "@/components/ui/text";
-import { Center } from "@/components/ui/center";
-import { VStack } from "@/components/ui/vstack";
-import { HStack } from "@/components/ui/hstack";
-import { Icon } from "@/components/ui/icon/index.web";
 import { StatusMetric } from "./StatusMetric";
 
 export type StatusMetricGroupProps = {
@@ -65,9 +65,8 @@ export function StatusMetricGroup({
         </VStack>
         {/* Net Production/Consumption */}
         <VStack
-          className={`border-2 rounded-full py-4 px-6 ${
-            net > 0 ? "border-blue-500" : "border-orange-500"
-          }`}
+          className={`border-2 rounded-full py-4 px-6 ${net > 0 ? "border-blue-500" : "border-orange-500"
+            }`}
         >
           <Center className="w-full">
             <Icon
@@ -76,17 +75,15 @@ export function StatusMetricGroup({
               color={net > 0 ? "#3b82f6" : "#f97316"}
             />
             <Text
-              className={`font-bold ${
-                net > 0 ? "text-blue-500" : "text-orange-500"
-              }`}
+              className={`font-bold ${net > 0 ? "text-blue-500" : "text-orange-500"
+                }`}
             >
               {net > 0 ? net.toFixed(1) : (-net).toFixed(1)}{" "}
               <Text
-                className={`text-xs ${
-                  net > 0 ? "text-blue-500" : "text-orange-500"
-                }`}
+                className={`text-xs ${net > 0 ? "text-blue-500" : "text-orange-500"
+                  }`}
               >
-                kWh
+                Wh
               </Text>
             </Text>
             <Text className="text-xs">Net</Text>

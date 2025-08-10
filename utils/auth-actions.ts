@@ -1,12 +1,6 @@
 import { auth } from "@/firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 
-import { AuthContextType } from "./authContext";
-
-export function isLoggedIn(user: AuthContextType["user"]) {
-  return user !== null
-}
-
 export async function login(email: string, password: string) {
   try {
     const result = await signInWithEmailAndPassword(auth, email, password);

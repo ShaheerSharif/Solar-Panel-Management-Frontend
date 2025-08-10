@@ -1,8 +1,4 @@
-import { useState } from "react";
-import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "@/utils/authContext";
-
+import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
 import {
   FormControl,
   FormControlError,
@@ -11,26 +7,27 @@ import {
   FormControlLabel,
   FormControlLabelText,
 } from "@/components/ui/form-control";
+import { Heading } from "@/components/ui/heading";
+import { HStack } from "@/components/ui/hstack";
+import { Input, InputField } from "@/components/ui/input";
+import { Link, LinkText } from "@/components/ui/link";
 import {
   Modal,
   ModalBackdrop,
-  ModalContent,
-  ModalHeader,
   ModalBody,
-  ModalFooter
+  ModalContent,
+  ModalFooter,
+  ModalHeader
 } from "@/components/ui/modal";
 import { Text } from "@/components/ui/text";
-import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
+import { useRouter } from "expo-router";
 import { AlertCircleIcon, ArrowLeftIcon } from "lucide-react-native";
-import { Button, ButtonText, ButtonIcon } from "@/components/ui/button";
-import { Input, InputField } from "@/components/ui/input";
-import { Link, LinkText } from "@/components/ui/link";
-import { Heading } from "@/components/ui/heading";
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
-  const authContext = useAuth();
 
   const [email, setEmail] = useState("");
   const [isEmailInvalid, setIsEmailInvalid] = useState<boolean | undefined>();
@@ -43,6 +40,11 @@ export default function ForgotPasswordScreen() {
     return email !== undefined && email !== "";
   };
 
+  const passwordReset = (email: string) => {
+    // FIXME: FIX THIS
+    return true
+  }
+
   const handleReset = () => {
     const emailStatus = checkEmailFormat();
 
@@ -52,7 +54,7 @@ export default function ForgotPasswordScreen() {
       return;
     }
 
-    const emailExists = authContext.passwordReset(email);
+    const emailExists = passwordReset(email);
 
     if (!emailExists) {
       setEmailErr("Incorrect email");

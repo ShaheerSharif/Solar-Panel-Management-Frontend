@@ -8,12 +8,6 @@
       ],
       "tailwind.config": [
         "./tailwind.config.js"
-      ],
-      "@utils": [
-        "./utils/*"
-      ],
-      "@components": [
-        "./components/*"
       ]
     }
   },
